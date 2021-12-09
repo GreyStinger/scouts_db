@@ -1,6 +1,8 @@
 pub mod arg_to_env {
 	use std::env;
 
+	// Handle all possible None values in this function so that I
+	// don't have to worry about explicitly handeling it anywhere else.
 	fn set_defaults() {
 		if env::var_os("IP_ADDRESS") == None {
 			env::set_var("IP_ADDRESS", "127.0.0.1");
@@ -13,6 +15,9 @@ pub mod arg_to_env {
 		}
 	}
 
+
+	// Take in command line arguments, process those that are important
+	// and drop those that aren't.
 	pub fn run() {
 		let args: Vec<String> = env::args().collect();
 		let mut i: usize = 0;

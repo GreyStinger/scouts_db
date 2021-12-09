@@ -2,13 +2,15 @@ use actix_web::{get, web, HttpResponse, Responder, App, HttpServer};
 use std::sync::Mutex;
 use std::env;
 
-// Include modules
+
 mod start_config;
+
 
 struct State {
     app_name: String,
     login_counter: Mutex<i32>
 }
+
 
 #[get("/")]
 async fn home(data: web::Data<State>) -> impl Responder {
@@ -19,9 +21,11 @@ async fn home(data: web::Data<State>) -> impl Responder {
     HttpResponse::Ok().body(format!("<h2>Hello {0}!</h2><p>Logged in {1} times.</p>", &data.app_name, counter))
 }
 
+
 async fn login() -> impl Responder {
     "Login Page."
 }
+
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -45,6 +49,7 @@ async fn main() -> std::io::Result<()> {
                     .route("/login.html", web::get().to(login))
                 )
     })
+    // Clone the ip_addr so that it doesn't go out of this scope.
     .bind(ip_addr.clone())?
     .workers(env::var("WORKERS").unwrap().parse::<usize>().unwrap())
     .run();
