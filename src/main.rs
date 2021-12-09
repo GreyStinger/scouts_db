@@ -1,6 +1,6 @@
 // Include Main use cases
 use actix_web::{get, web, HttpResponse, Responder, App, HttpServer};
-use std::collections::HashMap;
+// use std::collections::HashMap;
 use std::sync::Mutex;
 use std::env;
 
@@ -27,32 +27,37 @@ async fn login() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let args: HashMap<&str, String> = start_config::arg_handler::sort(env::args().collect());
 
-    let mut ip_addr: String = String::new();
-    let  workers: usize;
+    // let args: HashMap<&str, String> = start_config::arg_handler::sort(env::args().collect());
 
-    if args.contains_key("ip_addr") {
-        ip_addr.push_str(args["ip_addr"].clone().as_str());
-    } else {
-        ip_addr.push_str("127.0.0.1");
-    }
+    // let mut ip_addr: String = String::new();
+    // let  workers: usize;
 
-    ip_addr.push(':');
+    // if args.contains_key("ip_addr") {
+    //     ip_addr.push_str(args["ip_addr"].clone().as_str());
+    // } else {
+    //     ip_addr.push_str("127.0.0.1");
+    // }
+
+    // ip_addr.push(':');
     
-    if args.contains_key("port") {
-        ip_addr.push_str(args["port"].clone().as_str());
-    }   else {
-        ip_addr.push_str("8080");
-    }
+    // if args.contains_key("port") {
+    //     ip_addr.push_str(args["port"].clone().as_str());
+    // }   else {
+    //     ip_addr.push_str("8080");
+    // }
 
-    if args.contains_key("workers") {
-        workers = args["workers"].parse().unwrap();
-    } else {
-        workers = 6;
-    }
+    // if args.contains_key("workers") {
+    //     workers = args["workers"].parse().unwrap();
+    // } else {
+    //     workers = 6;
+    // }
 
     println!("Server Starting.");
+
+    start_config::arg_to_env::run();
+
+    let ip_addr = format!("{}:{}", env::var("IP_ADDRESS").unwrap(), env::var("PORT").unwrap()); 
 
     let main_state = web::Data::new(State {
                     app_name: String::from("Scout-DB"),
@@ -68,8 +73,8 @@ async fn main() -> std::io::Result<()> {
                     .route("/login.html", web::get().to(login))
                 )
     })
-    .bind(ip_addr.as_str())?
-    .workers(workers)
+    .bind(ip_addr.clone())?
+    .workers(env::var("WORKERS").unwrap().parse::<usize>().unwrap())
     .run();
     
     println!("Server built successfully on: {:?}", ip_addr);
