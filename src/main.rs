@@ -1,6 +1,4 @@
-// Include Main use cases
 use actix_web::{get, web, HttpResponse, Responder, App, HttpServer};
-// use std::collections::HashMap;
 use std::sync::Mutex;
 use std::env;
 
@@ -27,32 +25,6 @@ async fn login() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-
-    // let args: HashMap<&str, String> = start_config::arg_handler::sort(env::args().collect());
-
-    // let mut ip_addr: String = String::new();
-    // let  workers: usize;
-
-    // if args.contains_key("ip_addr") {
-    //     ip_addr.push_str(args["ip_addr"].clone().as_str());
-    // } else {
-    //     ip_addr.push_str("127.0.0.1");
-    // }
-
-    // ip_addr.push(':');
-    
-    // if args.contains_key("port") {
-    //     ip_addr.push_str(args["port"].clone().as_str());
-    // }   else {
-    //     ip_addr.push_str("8080");
-    // }
-
-    // if args.contains_key("workers") {
-    //     workers = args["workers"].parse().unwrap();
-    // } else {
-    //     workers = 6;
-    // }
-
     println!("Server Starting.");
 
     start_config::arg_to_env::run();
@@ -60,9 +32,9 @@ async fn main() -> std::io::Result<()> {
     let ip_addr = format!("{}:{}", env::var("IP_ADDRESS").unwrap(), env::var("PORT").unwrap()); 
 
     let main_state = web::Data::new(State {
-                    app_name: String::from("Scout-DB"),
-                    login_counter: Mutex::new(0)
-                });
+        app_name: String::from("Scout-DB"),
+        login_counter: Mutex::new(0)
+    });
 
     let server = HttpServer::new(move || {
         App::new()
